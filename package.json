@@ -1,0 +1,35 @@
+{
+  "name": "beforecb",
+  "version": "0.0.1",
+  "description": "Wrap a function to call a function before its callback is called",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/timjrobinson/beforecb.git"
+  },
+  "keywords": [
+    "before",
+    "callback",
+    "aspect",
+    "aop",
+    "functional"
+  ],
+  "author": "Tim Robinson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/timjrobinson/beforecb/issues"
+  },
+  "homepage": "https://github.com/timjrobinson/beforecb#readme",
+  "devDependencies": {
+    "tape": "^4.4.0"
+  },
+  "dependencies": {
+    "beforefn": "^3.0.1"
+  }
+}
