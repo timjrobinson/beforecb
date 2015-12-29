@@ -7,6 +7,7 @@ function slowFunc(callback) {
 }
 
 // Time every call to this function without inserting any new code into the function or calls to it
+// Warning: This won't work if you call slowFunc multiple times in parallel.
 var startTime;
 slowFunc = beforefn(slowFunc, function() {
     startTime = Date.now();

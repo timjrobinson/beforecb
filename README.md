@@ -10,7 +10,7 @@ You can do the following without having to insert code into the function or wrap
 
 # Examples
 
-```
+```js
 var beforefn = require("beforefn"); // https://github.com/timoxley/beforefn
 var beforecb = require("../"); 
 
