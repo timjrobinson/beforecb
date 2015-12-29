@@ -11,21 +11,26 @@ You can do the following without having to insert code into the function or wrap
 # Examples
 
 ```
-var beforefn = require("beforefn"); # https://github.com/timoxley/beforefn
-var beforecb = require("beforecb"); 
+var beforefn = require("beforefn"); // https://github.com/timoxley/beforefn
+var beforecb = require("../"); 
 
-function dbRequest(request, callback) {
-    request(function() {
-        callback();
-    }); 
+function slowFunc(callback) {
+    for (var i = 0; i < 10e7; i++) {}
+    callback();
 }
 
-// Time every call to this function without inserting any new code into the function or every call.
-beforefn(dbRequest, function() {
-    var startTime;
+// Time calls to this function without inserting any new code into the function or calls to it
+// Warning: This won't work if you call slowFunc multiple times in parallel.
+var startTime;
+slowFunc = beforefn(slowFunc, function() {
     startTime = Date.now();
-    beforecb(dbRequest, function() {
-        console.log("Total time: " + (Date.now() - startTime));
-    });
-}
+});
+slowFunc = beforecb(slowFunc, function() {
+    console.log("Total time: " + (Date.now() - startTime));
+});
+
+// Call the function as usual, and see timings added
+slowFunc(function() {
+    console.log("done");
+});
 ```
