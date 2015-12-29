@@ -26,7 +26,7 @@ function slowFunc(callback) {
     callback();
 }
 
-// Time calls to this function without inserting any new code into the function or calls to it
+// Time calls to this function without inserting any new code into the function or wrapping calls to it
 // Warning: This won't work if you call slowFunc multiple times in parallel.
 var startTime;
 slowFunc = beforefn(slowFunc, function() {
