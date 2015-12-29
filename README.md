@@ -1,14 +1,21 @@
 # beforecb
-Wrap a function to call a function before its callback is called
 
-# Usages
+#### Wrap a function to call a function before its callback is called
+
+## Usage
 
 You can do the following without having to insert code into the function or wrap every call
 
 - Time async functions 
 - Output when your program is entering / exiting functions 
 
-# Examples
+## Facts
+
+- beforecb returns a new function
+- You can pass multiple arguments to it, the last function will be presumed to be the callback. 
+- All arguments to the callback will be passed to beforecb function.
+
+## Examples
 
 ```js
 var beforefn = require("beforefn"); // https://github.com/timoxley/beforefn
@@ -34,3 +41,8 @@ slowFunc(function() {
     console.log("done");
 });
 ```
+
+## See Also
+
+* [timoxley/beforefn](http://github.com/timoxley/beforefn)
+* [timoxley/afterfn](http://github.com/timoxley/afterfn)
