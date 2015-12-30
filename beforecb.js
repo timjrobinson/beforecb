@@ -1,6 +1,8 @@
 var beforefn = require("beforefn");
 
-function beforeCallback(fn, beforeCbFn) {
+function beforeCallback(options, fn, beforeCbFn) {
+    if (arguments.length == 2) return beforeCallback({}, options, fn);
+    
     var wrappedFunction = function() {
         var args = Array.prototype.slice.call(arguments);
         var cbNum = null;
@@ -10,8 +12,26 @@ function beforeCallback(fn, beforeCbFn) {
             }
         }
         
+        if (options.allArgs) {
+            beforeCbFn = beforeCbFn.bind(this, args);
+        }
+        
+        var originalCallback = args[cbNum];
         if (cbNum !== null) {
-            args[cbNum] = beforefn(args[cbNum], beforeCbFn);
+            if (options.async) {
+                args[cbNum] = function() {
+                    var cbArgs = Array.prototype.slice.call(arguments);
+                    var context = this;
+                    
+                    // Add done callback
+                    var beforeCbFnArgs = cbArgs.concat([function() {
+                        originalCallback.apply(context, cbArgs);
+                    }]);
+                    beforeCbFn.apply(context, beforeCbFnArgs);
+                }
+            } else {
+                args[cbNum] = beforefn(args[cbNum], beforeCbFn);
+            }
         }
         fn.apply(this, args);
     }

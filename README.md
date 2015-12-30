@@ -9,11 +9,27 @@ You can do the following without having to insert code into the function or wrap
 - Time async functions 
 - Output when your program is entering / exiting functions 
 
-## Facts
+```js
+var beforecb = require("beforecb");
+
+var wrapped = beforecb(options, function original, function beforeCbFunction);
+```
+
+Arguments:
+
+- `options` - *Optional* - An object with any of the following options:
+    - async - the last argument to beforeCbFunction will be a callback and your original callback will only be called once this is called
+    - allArgs - arguments to the original function are passed as an array to the first argument of beforeCbFunction
+- `original` - The function you want to wrap.
+- `beforeCbFunction` - A function to call just before the wrapped functions callback. 
+
+## API Info
 
 - beforecb returns a new function
 - You can pass multiple arguments to it, the last function will be presumed to be the callback. 
-- All arguments to the callback will be passed to beforecb function.
+- All arguments to the callback will be passed to the beforecb function.
+- By default the original callback is called after beforeCbFunction has returned (If `options.async` is not set)
+- When in async mode all arguments to your callback are passed to beforeCbFunction and the `done` function will be the last argument.
 
 ## Examples
 

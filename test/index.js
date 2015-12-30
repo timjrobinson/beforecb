@@ -19,13 +19,28 @@ test("before executes before", function(t) {
 
 test("works when multiple arguments are passed", function(t) {
     var called = 0;
-    var func = function(number, letter, func, cb) {
+    var func = function(letter, number, func, cb) {
         cb(); 
     };
     var wrappedFunc = beforecb(func, function () {
         called++;
     });
-    wrappedFunc(1, "two", function() {}, function() {
+    wrappedFunc("a", 1, function() {}, function() {
+        t.equal(called, 1);
+        t.end();
+    });
+});
+
+test("works in async mode", function(t) {
+    var called = 0;
+    var func = function(cb) {
+        cb(); 
+    };
+    var wrappedFunc = beforecb({async: true}, func, function (done) {
+        called++;
+        return done();
+    });
+    wrappedFunc(function() {
         t.equal(called, 1);
         t.end();
     });
@@ -46,15 +61,51 @@ test("before is passed args that were passed to callback", function (t) {
     });
 });
 
+test("when in async mode before is passed args that were passed to callback", function (t) {
+    var func = function(cb) { 
+        cb("a", 1); 
+    };
+    var wrappedFunc = beforecb({async: true}, func, function(letter, number, callback) {
+        console.log("Args is: ", arguments);
+        t.equal(letter, "a");
+        t.equal(number, 1);
+        callback();
+    });
+    wrappedFunc(function() {
+        t.equal(arguments[0], "a");
+        t.equal(arguments[1], 1);
+        t.end();
+    });
+});
+
+test("before is passed args that were passed to original function if allArgs is true", function (t) {
+    var func = function(one, two, cb) { 
+        t.equal(one, "b")
+        t.equal(two, 2)
+        cb("a", 1); 
+    };
+    var wrappedFunc = beforecb({allArgs: true}, func, function() {
+        t.equal(arguments[0][0], "b");
+        t.equal(arguments[0][1], 2);
+        t.equal(arguments[1], "a");
+        t.equal(arguments[2], 1);
+    });
+    wrappedFunc("b", 2, function() {
+        t.equal(arguments[0], "a");
+        t.equal(arguments[1], 1);
+        t.end();
+    });
+});
+
 test("original function is still passed arguments", function (t) {
     t.plan(2);
     var func = function(one, two, cb) { 
-        t.equal(one, "a")
+        t.equal(one, "b")
         t.equal(two, 2)
         cb(); 
     };
     var wrappedFunc = beforecb(func, function() {});
-    wrappedFunc("a", 2, function() {
+    wrappedFunc("b", 2, function() {
         t.end();
     });
 });
