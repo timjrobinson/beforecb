@@ -13,10 +13,6 @@ function beforeCallback(options, fn, beforeCbFn) {
             }
         }
         
-        if (options.allArgs) {
-            beforeCbFn = beforeCbFn.bind(context, args);
-        }
-        
         var originalCallback = args[cbNum];
         if (cbNum !== null) {
             if (options.async) {
@@ -24,12 +20,19 @@ function beforeCallback(options, fn, beforeCbFn) {
                     var cbArgs = Array.prototype.slice.call(arguments);
                     
                     // Add done callback
-                    var beforeCbFnArgs = cbArgs.concat([function() {
+                    var beforeCbFnCallback = function() {
                         originalCallback.apply(context, cbArgs);
-                    }]);
-                    beforeCbFn.apply(context, beforeCbFnArgs);
+                    };
+                    
+                    beforeCbFnCallback.args = options.allArgs ? [args] : [];
+                    beforeCbFnCallback.args = beforeCbFnCallback.args.concat(cbArgs);
+                    
+                    beforeCbFn.apply(context, [beforeCbFnCallback]);
                 }
             } else {
+                if (options.allArgs) {
+                    beforeCbFn = beforeCbFn.bind(context, args);
+                }
                 args[cbNum] = beforefn(args[cbNum], beforeCbFn);
             }
         }
