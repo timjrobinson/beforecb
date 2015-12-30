@@ -66,7 +66,6 @@ test("when in async mode before is passed args that were passed to callback", fu
         cb("a", 1); 
     };
     var wrappedFunc = beforecb({async: true}, func, function(letter, number, callback) {
-        console.log("Args is: ", arguments);
         t.equal(letter, "a");
         t.equal(number, 1);
         callback();
@@ -80,8 +79,8 @@ test("when in async mode before is passed args that were passed to callback", fu
 
 test("before is passed args that were passed to original function if allArgs is true", function (t) {
     var func = function(one, two, cb) { 
-        t.equal(one, "b")
-        t.equal(two, 2)
+        t.equal(one, "b");
+        t.equal(two, 2);
         cb("a", 1); 
     };
     var wrappedFunc = beforecb({allArgs: true}, func, function() {
@@ -89,6 +88,26 @@ test("before is passed args that were passed to original function if allArgs is 
         t.equal(arguments[0][1], 2);
         t.equal(arguments[1], "a");
         t.equal(arguments[2], 1);
+    });
+    wrappedFunc("b", 2, function() {
+        t.equal(arguments[0], "a");
+        t.equal(arguments[1], 1);
+        t.end();
+    });
+});
+
+test("when using async and allArgs both work as they should", function (t) {
+    var func = function(one, two, cb) { 
+        t.equal(one, "b");
+        t.equal(two, 2);
+        cb("a", 1); 
+    };
+    var wrappedFunc = beforecb({async: true, allArgs: true}, func, function(originalArgs, letter, number, callback) {
+        t.equal(originalArgs[0], "b");
+        t.equal(originalArgs[1], 2);
+        t.equal(letter, "a");
+        t.equal(number, 1);
+        callback();
     });
     wrappedFunc("b", 2, function() {
         t.equal(arguments[0], "a");
