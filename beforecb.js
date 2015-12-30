@@ -6,6 +6,7 @@ function beforeCallback(options, fn, beforeCbFn) {
     var wrappedFunction = function() {
         var args = Array.prototype.slice.call(arguments);
         var cbNum = null;
+        var context = fn;
         for (var i = 0; i < args.length; i++) {
             if (typeof args[i] === "function") {
                 cbNum = i;
@@ -13,7 +14,7 @@ function beforeCallback(options, fn, beforeCbFn) {
         }
         
         if (options.allArgs) {
-            beforeCbFn = beforeCbFn.bind(this, args);
+            beforeCbFn = beforeCbFn.bind(context, args);
         }
         
         var originalCallback = args[cbNum];
@@ -21,7 +22,6 @@ function beforeCallback(options, fn, beforeCbFn) {
             if (options.async) {
                 args[cbNum] = function() {
                     var cbArgs = Array.prototype.slice.call(arguments);
-                    var context = this;
                     
                     // Add done callback
                     var beforeCbFnArgs = cbArgs.concat([function() {
