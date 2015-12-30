@@ -1,6 +1,6 @@
 {
   "name": "beforecb",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Wrap a function to call a function before its callback is called",
   "main": "index.js",
   "directories": {
